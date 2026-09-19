@@ -1,1 +1,3 @@
-Expected to include multipal demos.
+基于 Ansys Lumerical FDTD 的电磁仿真自动化
+
+本项目为本科毕业设计的阶段性代码记录，研究如何利用 Ansys Lumerical FDTD 的内置脚本实现参数化建模、仿真配置、运行和结果提取，并与手动建模结果进行对照，逐步形成可复用的电磁仿真工作流程。
