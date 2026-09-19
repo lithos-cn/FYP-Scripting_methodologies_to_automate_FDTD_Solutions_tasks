@@ -1,0 +1,200 @@
+# Ansys Lumerical FDTD 2024 R2
+# 只读检查脚本：提取手动建立的纳米孔模型关键设置
+# 不创建对象、不修改对象、不运行仿真。
+# 输出文件：manual_model_settings.tsv（位于当前 working directory）
+
+clear;
+
+# ============================================================
+# 0. 对象名称
+# 如果你的Objects Tree名称不同，只修改这里的字符串。
+# ============================================================
+film_name      = "film";
+substrate_name = "substrate";
+holes_name     = "nanoholes";
+fdtd_name      = "FDTD";
+mesh_name      = "mesh";
+source_name    = "source";
+r_name         = "R";
+t_name         = "T";
+profile_name   = "profile";
+xy_index_name  = "XY index";
+xz_index_name  = "XZ index";
+
+outfile = "manual_model_settings_01.txt";
+
+write(outfile,"section\tobject\tproperty\tvalue\tunit");
+
+# ============================================================
+# 1. 金膜
+# ============================================================
+if (getnamednumber(film_name)>0) {
+    write(outfile,"geometry\t"+film_name+"\tmaterial\t"+getnamed(film_name,"material")+"\t-");
+    write(outfile,"geometry\t"+film_name+"\tx\t"+num2str(getnamed(film_name,"x")*1e9)+"\tnm");
+    write(outfile,"geometry\t"+film_name+"\tx span\t"+num2str(getnamed(film_name,"x span")*1e9)+"\tnm");
+    write(outfile,"geometry\t"+film_name+"\ty\t"+num2str(getnamed(film_name,"y")*1e9)+"\tnm");
+    write(outfile,"geometry\t"+film_name+"\ty span\t"+num2str(getnamed(film_name,"y span")*1e9)+"\tnm");
+    write(outfile,"geometry\t"+film_name+"\tz min\t"+num2str(getnamed(film_name,"z min")*1e9)+"\tnm");
+    write(outfile,"geometry\t"+film_name+"\tz max\t"+num2str(getnamed(film_name,"z max")*1e9)+"\tnm");
+} else {
+    write(outfile,"missing\t"+film_name+"\tobject not found\t-\t-");
+}
+
+# ============================================================
+# 2. 玻璃基底
+# ============================================================
+if (getnamednumber(substrate_name)>0) {
+    write(outfile,"geometry\t"+substrate_name+"\tmaterial\t"+getnamed(substrate_name,"material")+"\t-");
+    write(outfile,"geometry\t"+substrate_name+"\tx span\t"+num2str(getnamed(substrate_name,"x span")*1e9)+"\tnm");
+    write(outfile,"geometry\t"+substrate_name+"\ty span\t"+num2str(getnamed(substrate_name,"y span")*1e9)+"\tnm");
+    write(outfile,"geometry\t"+substrate_name+"\tz min\t"+num2str(getnamed(substrate_name,"z min")*1e9)+"\tnm");
+    write(outfile,"geometry\t"+substrate_name+"\tz max\t"+num2str(getnamed(substrate_name,"z max")*1e9)+"\tnm");
+} else {
+    write(outfile,"missing\t"+substrate_name+"\tobject not found\t-\t-");
+}
+
+# ============================================================
+# 3. 教程Object Library中的nanoholes结构组用户参数
+# ============================================================
+if (getnamednumber(holes_name)>0) {
+    write(outfile,"nanoholes\t"+holes_name+"\tmaterial\t"+getnamed(holes_name,"material")+"\t-");
+    write(outfile,"nanoholes\t"+holes_name+"\tz\t"+num2str(getnamed(holes_name,"z")*1e9)+"\tnm");
+    write(outfile,"nanoholes\t"+holes_name+"\tz span\t"+num2str(getnamed(holes_name,"z span")*1e9)+"\tnm");
+    write(outfile,"nanoholes\t"+holes_name+"\tnx\t"+num2str(getnamed(holes_name,"nx"))+"\t-");
+    write(outfile,"nanoholes\t"+holes_name+"\tny\t"+num2str(getnamed(holes_name,"ny"))+"\t-");
+    write(outfile,"nanoholes\t"+holes_name+"\tax\t"+num2str(getnamed(holes_name,"ax")*1e9)+"\tnm");
+    write(outfile,"nanoholes\t"+holes_name+"\tay\t"+num2str(getnamed(holes_name,"ay")*1e9)+"\tnm");
+    write(outfile,"nanoholes\t"+holes_name+"\tradius\t"+num2str(getnamed(holes_name,"radius")*1e9)+"\tnm");
+} else {
+    write(outfile,"missing\t"+holes_name+"\tobject not found\t-\t-");
+}
+
+# ============================================================
+# 4. FDTD求解区域
+# ============================================================
+if (getnamednumber(fdtd_name)>0) {
+    write(outfile,"FDTD\t"+fdtd_name+"\tdimension\t"+getnamed(fdtd_name,"dimension")+"\tenum");
+    write(outfile,"FDTD\t"+fdtd_name+"\tindex\t"+getnamed(fdtd_name,"index")+"\t-");
+    write(outfile,"FDTD\t"+fdtd_name+"\tsimulation time\t"+num2str(getnamed(fdtd_name,"simulation time")*1e15)+"\tfs");
+    write(outfile,"FDTD\t"+fdtd_name+"\tauto shutoff min\t"+num2str(getnamed(fdtd_name,"auto shutoff min"))+"\t-");
+    write(outfile,"FDTD\t"+fdtd_name+"\tmesh accuracy\t"+num2str(getnamed(fdtd_name,"mesh accuracy"))+"\t-");
+    write(outfile,"FDTD\t"+fdtd_name+"\tx\t"+num2str(getnamed(fdtd_name,"x")*1e9)+"\tnm");
+    write(outfile,"FDTD\t"+fdtd_name+"\tx span\t"+num2str(getnamed(fdtd_name,"x span")*1e9)+"\tnm");
+    write(outfile,"FDTD\t"+fdtd_name+"\ty\t"+num2str(getnamed(fdtd_name,"y")*1e9)+"\tnm");
+    write(outfile,"FDTD\t"+fdtd_name+"\ty span\t"+num2str(getnamed(fdtd_name,"y span")*1e9)+"\tnm");
+    write(outfile,"FDTD\t"+fdtd_name+"\tz\t"+num2str(getnamed(fdtd_name,"z")*1e9)+"\tnm");
+    write(outfile,"FDTD\t"+fdtd_name+"\tz span\t"+num2str(getnamed(fdtd_name,"z span")*1e9)+"\tnm");
+    write(outfile,"FDTD\t"+fdtd_name+"\tallow symmetry on all boundaries\t"+num2str(getnamed(fdtd_name,"allow symmetry on all boundaries"))+"\tboolean");
+    write(outfile,"FDTD\t"+fdtd_name+"\tx min bc\t"+getnamed(fdtd_name,"x min bc")+"\tenum");
+    write(outfile,"FDTD\t"+fdtd_name+"\tx max bc\t"+getnamed(fdtd_name,"x max bc")+"\tenum");
+    write(outfile,"FDTD\t"+fdtd_name+"\ty min bc\t"+getnamed(fdtd_name,"y min bc")+"\tenum");
+    write(outfile,"FDTD\t"+fdtd_name+"\ty max bc\t"+getnamed(fdtd_name,"y max bc")+"\tenum");
+    write(outfile,"FDTD\t"+fdtd_name+"\tz min bc\t"+getnamed(fdtd_name,"z min bc")+"\tenum");
+    write(outfile,"FDTD\t"+fdtd_name+"\tz max bc\t"+getnamed(fdtd_name,"z max bc")+"\tenum");
+    write(outfile,"FDTD\t"+fdtd_name+"\tpml profile\t"+num2str(getnamed(fdtd_name,"pml profile"))+"\tenum");
+} else {
+    write(outfile,"missing\t"+fdtd_name+"\tobject not found\t-\t-");
+}
+
+# ============================================================
+# 5. 局部网格
+# ============================================================
+if (getnamednumber(mesh_name)>0) {
+    mesh_based_on_structure = getnamed(mesh_name,"based on a structure");
+    write(outfile,"mesh\t"+mesh_name+"\tbased on a structure\t"+num2str(mesh_based_on_structure)+"\tboolean");
+    if (mesh_based_on_structure==1) {
+        write(outfile,"mesh\t"+mesh_name+"\tstructure\t"+getnamed(mesh_name,"structure")+"\t-");
+    } else {
+        write(outfile,"mesh\t"+mesh_name+"\tx\t"+num2str(getnamed(mesh_name,"x")*1e9)+"\tnm");
+        write(outfile,"mesh\t"+mesh_name+"\tx span\t"+num2str(getnamed(mesh_name,"x span")*1e9)+"\tnm");
+        write(outfile,"mesh\t"+mesh_name+"\ty\t"+num2str(getnamed(mesh_name,"y")*1e9)+"\tnm");
+        write(outfile,"mesh\t"+mesh_name+"\ty span\t"+num2str(getnamed(mesh_name,"y span")*1e9)+"\tnm");
+        write(outfile,"mesh\t"+mesh_name+"\tz\t"+num2str(getnamed(mesh_name,"z")*1e9)+"\tnm");
+        write(outfile,"mesh\t"+mesh_name+"\tz span\t"+num2str(getnamed(mesh_name,"z span")*1e9)+"\tnm");
+    }
+    write(outfile,"mesh\t"+mesh_name+"\tdx\t"+num2str(getnamed(mesh_name,"dx")*1e9)+"\tnm");
+    write(outfile,"mesh\t"+mesh_name+"\tdy\t"+num2str(getnamed(mesh_name,"dy")*1e9)+"\tnm");
+    write(outfile,"mesh\t"+mesh_name+"\tdz\t"+num2str(getnamed(mesh_name,"dz")*1e9)+"\tnm");
+} else {
+    write(outfile,"missing\t"+mesh_name+"\tobject not found; edit mesh_name at top if renamed\t-\t-");
+}
+
+# ============================================================
+# 6. 平面波光源
+# ============================================================
+if (getnamednumber(source_name)>0) {
+    write(outfile,"source\t"+source_name+"\tinjection axis\t"+getnamed(source_name,"injection axis")+"\tenum");
+    write(outfile,"source\t"+source_name+"\tdirection\t"+getnamed(source_name,"direction")+"\tenum");
+    write(outfile,"source\t"+source_name+"\tpolarization angle\t"+num2str(getnamed(source_name,"polarization angle"))+"\tdegree");
+    write(outfile,"source\t"+source_name+"\tangle theta\t"+num2str(getnamed(source_name,"angle theta"))+"\tdegree");
+    write(outfile,"source\t"+source_name+"\tangle phi\t"+num2str(getnamed(source_name,"angle phi"))+"\tdegree");
+    write(outfile,"source\t"+source_name+"\tx\t"+num2str(getnamed(source_name,"x")*1e9)+"\tnm");
+    write(outfile,"source\t"+source_name+"\tx span\t"+num2str(getnamed(source_name,"x span")*1e9)+"\tnm");
+    write(outfile,"source\t"+source_name+"\ty\t"+num2str(getnamed(source_name,"y")*1e9)+"\tnm");
+    write(outfile,"source\t"+source_name+"\ty span\t"+num2str(getnamed(source_name,"y span")*1e9)+"\tnm");
+    write(outfile,"source\t"+source_name+"\tz\t"+num2str(getnamed(source_name,"z")*1e9)+"\tnm");
+    write(outfile,"source\t"+source_name+"\twavelength start\t"+num2str(getnamed(source_name,"wavelength start")*1e9)+"\tnm");
+    write(outfile,"source\t"+source_name+"\twavelength stop\t"+num2str(getnamed(source_name,"wavelength stop")*1e9)+"\tnm");
+} else {
+    write(outfile,"missing\t"+source_name+"\tobject not found\t-\t-");
+}
+
+# ============================================================
+# 7. 全局监视器设置
+# ============================================================
+write(outfile,"monitor_global\tglobal\tuse source limits\t"+num2str(getglobalmonitor("use source limits"))+"\tboolean");
+write(outfile,"monitor_global\tglobal\tfrequency points\t"+num2str(getglobalmonitor("frequency points"))+"\t-");
+
+# ============================================================
+# 8. R与T监视器
+# ============================================================
+if (getnamednumber(r_name)>0) {
+    write(outfile,"monitor_R\t"+r_name+"\tmonitor type\t"+getnamed(r_name,"monitor type")+"\tenum");
+    write(outfile,"monitor_R\t"+r_name+"\tx span\t"+num2str(getnamed(r_name,"x span")*1e9)+"\tnm");
+    write(outfile,"monitor_R\t"+r_name+"\ty span\t"+num2str(getnamed(r_name,"y span")*1e9)+"\tnm");
+    write(outfile,"monitor_R\t"+r_name+"\tz\t"+num2str(getnamed(r_name,"z")*1e9)+"\tnm");
+    write(outfile,"monitor_R\t"+r_name+"\toverride global monitor settings\t"+num2str(getnamed(r_name,"override global monitor settings"))+"\tboolean");
+} else {
+    write(outfile,"missing\t"+r_name+"\tobject not found\t-\t-");
+}
+
+if (getnamednumber(t_name)>0) {
+    write(outfile,"monitor_T\t"+t_name+"\tmonitor type\t"+getnamed(t_name,"monitor type")+"\tenum");
+    write(outfile,"monitor_T\t"+t_name+"\tx span\t"+num2str(getnamed(t_name,"x span")*1e9)+"\tnm");
+    write(outfile,"monitor_T\t"+t_name+"\ty span\t"+num2str(getnamed(t_name,"y span")*1e9)+"\tnm");
+    write(outfile,"monitor_T\t"+t_name+"\tz\t"+num2str(getnamed(t_name,"z")*1e9)+"\tnm");
+    write(outfile,"monitor_T\t"+t_name+"\toverride global monitor settings\t"+num2str(getnamed(t_name,"override global monitor settings"))+"\tboolean");
+} else {
+    write(outfile,"missing\t"+t_name+"\tobject not found\t-\t-");
+}
+
+# ============================================================
+# 9. 场监视器与Index监视器位置
+# ============================================================
+if (getnamednumber(profile_name)>0) {
+    write(outfile,"monitor_profile\t"+profile_name+"\tmonitor type\t"+getnamed(profile_name,"monitor type")+"\tenum");
+    write(outfile,"monitor_profile\t"+profile_name+"\tx span\t"+num2str(getnamed(profile_name,"x span")*1e9)+"\tnm");
+    write(outfile,"monitor_profile\t"+profile_name+"\ty\t"+num2str(getnamed(profile_name,"y")*1e9)+"\tnm");
+    write(outfile,"monitor_profile\t"+profile_name+"\tz span\t"+num2str(getnamed(profile_name,"z span")*1e9)+"\tnm");
+    write(outfile,"monitor_profile\t"+profile_name+"\toverride global monitor settings\t"+num2str(getnamed(profile_name,"override global monitor settings"))+"\tboolean");
+    if (getnamed(profile_name,"override global monitor settings")==1) {
+        write(outfile,"monitor_profile\t"+profile_name+"\tfrequency points\t"+num2str(getnamed(profile_name,"frequency points"))+"\t-");
+    }
+} else {
+    write(outfile,"missing\t"+profile_name+"\tobject not found\t-\t-");
+}
+
+if (getnamednumber(xy_index_name)>0) {
+    write(outfile,"index_monitor\t"+xy_index_name+"\tx span\t"+num2str(getnamed(xy_index_name,"x span")*1e9)+"\tnm");
+    write(outfile,"index_monitor\t"+xy_index_name+"\ty span\t"+num2str(getnamed(xy_index_name,"y span")*1e9)+"\tnm");
+    write(outfile,"index_monitor\t"+xy_index_name+"\tz\t"+num2str(getnamed(xy_index_name,"z")*1e9)+"\tnm");
+}
+
+if (getnamednumber(xz_index_name)>0) {
+    write(outfile,"index_monitor\t"+xz_index_name+"\tx span\t"+num2str(getnamed(xz_index_name,"x span")*1e9)+"\tnm");
+    write(outfile,"index_monitor\t"+xz_index_name+"\ty\t"+num2str(getnamed(xz_index_name,"y")*1e9)+"\tnm");
+    write(outfile,"index_monitor\t"+xz_index_name+"\tz span\t"+num2str(getnamed(xz_index_name,"z span")*1e9)+"\tnm");
+}
+
+?"Parameter extraction completed: "+outfile;
+?"The file is saved in the current working directory.";

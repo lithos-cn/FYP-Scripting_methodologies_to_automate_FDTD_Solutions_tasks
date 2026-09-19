@@ -1,0 +1,81 @@
+section	object	property	value	unit
+geometry	film	material	Au (Gold) - CRC	-
+geometry	film	x	0	nm
+geometry	film	x span	1200	nm
+geometry	film	y	0	nm
+geometry	film	y span	1200	nm
+geometry	film	z min	0	nm
+geometry	film	z max	100	nm
+geometry	substrate	material	SiO2 (Glass) - Palik	-
+geometry	substrate	x span	1200	nm
+geometry	substrate	y span	1200	nm
+geometry	substrate	z min	-1000	nm
+geometry	substrate	z max	0	nm
+nanoholes	nanoholes	material	etch	-
+nanoholes	nanoholes	z	50	nm
+nanoholes	nanoholes	z span	100	nm
+nanoholes	nanoholes	nx	3	-
+nanoholes	nanoholes	ny	3	-
+nanoholes	nanoholes	ax	400	nm
+nanoholes	nanoholes	ay	400	nm
+nanoholes	nanoholes	radius	100	nm
+FDTD	FDTD	dimension	3D	enum
+FDTD	FDTD	index	1.0	-
+FDTD	FDTD	simulation time	1000	fs
+FDTD	FDTD	auto shutoff min	1e-05	-
+FDTD	FDTD	mesh accuracy	2	-
+FDTD	FDTD	x	0	nm
+FDTD	FDTD	x span	400	nm
+FDTD	FDTD	y	0	nm
+FDTD	FDTD	y span	400	nm
+FDTD	FDTD	z	0	nm
+FDTD	FDTD	z span	1000	nm
+FDTD	FDTD	allow symmetry on all boundaries	1	boolean
+FDTD	FDTD	x min bc	Anti-Symmetric	enum
+FDTD	FDTD	x max bc	Anti-Symmetric	enum
+FDTD	FDTD	y min bc	Symmetric	enum
+FDTD	FDTD	y max bc	Symmetric	enum
+FDTD	FDTD	z min bc	PML	enum
+FDTD	FDTD	z max bc	PML	enum
+FDTD	FDTD	pml profile	3	enum
+mesh	mesh	based on a structure	1	boolean
+mesh	mesh	structure	circle	-
+mesh	mesh	dx	10	nm
+mesh	mesh	dy	10	nm
+mesh	mesh	dz	10	nm
+source	source	injection axis	z-axis	enum
+source	source	direction	Backward	enum
+source	source	polarization angle	0	degree
+source	source	angle theta	0	degree
+source	source	angle phi	0	degree
+source	source	x	0	nm
+source	source	x span	800	nm
+source	source	y	0	nm
+source	source	y span	800	nm
+source	source	z	300	nm
+source	source	wavelength start	400	nm
+source	source	wavelength stop	700	nm
+monitor_global	global	use source limits	1	boolean
+monitor_global	global	frequency points	50	-
+monitor_R	R	monitor type	2D Z-normal	enum
+monitor_R	R	x span	500	nm
+monitor_R	R	y span	500	nm
+monitor_R	R	z	400	nm
+monitor_R	R	override global monitor settings	0	boolean
+monitor_T	T	monitor type	2D Z-normal	enum
+monitor_T	T	x span	500	nm
+monitor_T	T	y span	500	nm
+monitor_T	T	z	-400	nm
+monitor_T	T	override global monitor settings	0	boolean
+monitor_profile	profile	monitor type	2D Y-normal	enum
+monitor_profile	profile	x span	500	nm
+monitor_profile	profile	y	0	nm
+monitor_profile	profile	z span	1000	nm
+monitor_profile	profile	override global monitor settings	1	boolean
+monitor_profile	profile	frequency points	5	-
+index_monitor	XY index	x span	500	nm
+index_monitor	XY index	y span	500	nm
+index_monitor	XY index	z	50	nm
+index_monitor	XZ index	x span	500	nm
+index_monitor	XZ index	y	0	nm
+index_monitor	XZ index	z span	1000	nm

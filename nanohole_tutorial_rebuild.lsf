@@ -1,0 +1,233 @@
+# Ansys Lumerical FDTD 2024 R2
+# 第一次保持 run_simulation=0，运行脚本后先在 Layout 中检查对象和参数。
+
+clear;
+switchtolayout;
+deleteall;
+
+# ============================================================
+# 1. 集中定义参数（SI单位：m）
+# ============================================================
+period          = 400e-9;
+hole_radius     = 100e-9;
+film_thickness  = 100e-9;
+film_span       = 1.2e-6;
+substrate_depth = 1.0e-6;
+fdtd_z_span     = 1.0e-6;
+mesh_step       = 10e-9;
+lambda_start    = 400e-9;
+lambda_stop     = 700e-9;
+run_simulation  = 1;
+
+# 材料名称
+gold_material  = "Au (Gold) - CRC";
+glass_material = "SiO2 (Glass) - Palik";
+etch_material  = "etch";
+
+# ============================================================
+# 2. 结构：金膜与玻璃基底
+# ============================================================
+addrect;
+set("name","film");
+set("x",0);
+set("x span",film_span);
+set("y",0);
+set("y span",film_span);
+set("z min",0);
+set("z max",film_thickness);
+set("material",gold_material);
+set("override mesh order from material database",1);
+set("mesh order",2);
+
+addrect;
+set("name","substrate");
+set("x",0);
+set("x span",film_span);
+set("y",0);
+set("y span",film_span);
+set("z min",-substrate_depth);
+set("z max",0);
+set("material",glass_material);
+
+# ============================================================
+# 3. 结构：3 x 3空气孔阵列
+# ============================================================
+addstructuregroup;
+set("name","nanoholes");
+
+for (ix=-1:1) {
+    for (iy=-1:1) {
+        addcircle;
+        set("name","circle");
+        set("x",ix*period);
+        set("y",iy*period);
+        set("radius",hole_radius);
+        set("z min",0);
+        set("z max",film_thickness);
+        set("material",etch_material);
+        # 较小的mesh order具有更高的重叠优先级，使圆柱覆盖金膜形成孔。
+        set("override mesh order from material database",1);
+        set("mesh order",1);
+        addtogroup("nanoholes");
+    }
+}
+
+# ============================================================
+# 4. FDTD区域：一个周期单胞
+# x反对称、y对称边界；z方向为PML
+# ============================================================
+addfdtd;
+set("dimension","3D");
+set("x",0);
+set("x span",period);
+set("y",0);
+set("y span",period);
+set("z",0);
+set("z span",fdtd_z_span);
+set("mesh accuracy",2);
+set("allow symmetry on all boundaries",1);
+set("x min bc","Anti-Symmetric");
+set("x max bc","Anti-Symmetric");
+set("y min bc","Symmetric");
+set("y max bc","Symmetric");
+set("z min bc","PML");
+set("z max bc","PML");
+# 3对应Steep Angle PML。若版本枚举不一致，可在GUI中确认后注释此行
+set("pml profile",3);
+
+# ============================================================
+# 5. 局部网格：覆盖中心单胞内的金膜和圆孔
+# ============================================================
+addmesh;
+set("name","mesh_nanohole");
+set("x",0);
+set("x span",period);
+set("y",0);
+set("y span",period);
+set("z",film_thickness/2);
+set("z span",film_thickness);
+set("override x mesh",1);
+set("override y mesh",1);
+set("override z mesh",1);
+set("dx",mesh_step);
+set("dy",mesh_step);
+set("dz",mesh_step);
+
+# ============================================================
+# 6. 平面波：从空气侧沿-z方向法向入射
+# 默认偏振角为0度；与对称/反对称边界配套
+# ============================================================
+addplane;
+set("name","source");
+set("injection axis","z");
+set("direction","Backward");
+set("x",0);
+set("x span",0.5e-6);
+set("y",0);
+set("y span",0.5e-6);
+set("z",0.3e-6);
+set("wavelength start",lambda_start);
+set("wavelength stop",lambda_stop);
+set("polarization angle",0);
+
+# ============================================================
+# 7. 折射率监视器
+# ============================================================
+addindex;
+set("name","XY index");
+set("monitor type","2D Z-normal");
+set("x",0);
+set("x span",0.5e-6);
+set("y",0);
+set("y span",0.5e-6);
+set("z",film_thickness/2);
+
+addindex;
+set("name","XZ index");
+set("monitor type","2D Y-normal");
+set("x",0);
+set("x span",0.5e-6);
+set("y",0);
+set("z",0);
+set("z span",fdtd_z_span);
+
+# ============================================================
+# 8. R、T功率监视器及XZ场监视器
+# ============================================================
+setglobalmonitor("use source limits",1);
+setglobalmonitor("frequency points",50);
+
+addpower;
+set("name","R");
+set("monitor type","2D Z-normal");
+set("x",0);
+set("x span",0.5e-6);
+set("y",0);
+set("y span",0.5e-6);
+set("z",0.4e-6);
+
+addpower;
+set("name","T");
+set("monitor type","2D Z-normal");
+set("x",0);
+set("x span",0.5e-6);
+set("y",0);
+set("y span",0.5e-6);
+set("z",-0.4e-6);
+
+addprofile;
+set("name","profile");
+set("monitor type","2D Y-normal");
+set("x",0);
+set("x span",0.5e-6);
+set("y",0);
+set("z",0);
+set("z span",fdtd_z_span);
+set("override global monitor settings",1);
+set("use source limits",1);
+set("frequency points",5);
+
+# Movie monitor不是R/T计算所必需
+addmovie;
+set("name","movie");
+set("monitor type","2D Y-normal");
+set("x",0);
+set("x span",0.5e-6);
+set("y",0);
+set("z",0);
+set("z span",fdtd_z_span);
+
+# 保存建模完成但尚未运行的工程
+save("nanohole_tutorial_rebuild.fsp");
+
+# ============================================================
+# 9. 运行并绘制R、T、A
+# ============================================================
+if (run_simulation==1) {
+    run;
+
+    # 2024 R2的功率监视器原始d-card通常保存频率f，而不保存lambda
+    # 使用真空光速c将频率换算成波长
+    f = getdata("R","f");
+    lambda = c/f;
+    R = transmission("R");
+    # 入射波沿-z方向，T监视器的法向功率结果为负，因此取负号
+    T = -transmission("T");
+    A = 1-R-T;
+
+    plot(lambda*1e9,R,T,A,
+         "wavelength (nm)","power fraction",
+         "Nanohole array: R, T and A");
+    legend("R","T","A");
+
+    result = matrix(length(lambda),4);
+    result(1:length(lambda),1) = lambda*1e9;
+    result(1:length(lambda),2) = R;
+    result(1:length(lambda),3) = T;
+    result(1:length(lambda),4) = A;
+    write("nanohole_RTA.txt","lambda_nm, R, T, A");
+    write("nanohole_RTA.txt",num2str(result));
+    save;
+}
+
+?"脚本执行完成。第一次运行请在Objects Tree和各对象属性中检查模型。";
