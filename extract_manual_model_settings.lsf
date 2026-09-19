@@ -1,13 +1,11 @@
 # Ansys Lumerical FDTD 2024 R2
 # 只读检查脚本：提取手动建立的纳米孔模型关键设置
-# 不创建对象、不修改对象、不运行仿真。
-# 输出文件：manual_model_settings.tsv（位于当前 working directory）
+# 输出文件：manual_model_settings.txt
 
 clear;
 
 # ============================================================
 # 0. 对象名称
-# 如果你的Objects Tree名称不同，只修改这里的字符串。
 # ============================================================
 film_name      = "film";
 substrate_name = "substrate";
@@ -54,7 +52,7 @@ if (getnamednumber(substrate_name)>0) {
 }
 
 # ============================================================
-# 3. 教程Object Library中的nanoholes结构组用户参数
+# 3. nanoholes结构组用户参数
 # ============================================================
 if (getnamednumber(holes_name)>0) {
     write(outfile,"nanoholes\t"+holes_name+"\tmaterial\t"+getnamed(holes_name,"material")+"\t-");
